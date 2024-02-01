@@ -1,0 +1,107 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>"
+    />
+    <title>Truyện AI Dịch</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/sakura.css/css/sakura.css"
+      type="text/css"
+    />
+  </head>
+<body>
+    <h1>Kho sách của Thọ Gầy</h1>
+    <p>
+        1. Toàn bộ truyện ở đây đều là do AI của hikenshi dịch.<br/>
+        2. Phần mềm/ứng dụng đọc file epub: Windows, Mac, Linux (<a href="https://calibre-ebook.com/download">Calibre</a>, <a href="https://github.com/troyeguo/koodo-reader/releases">Koodo</a>); Android (<a href="https://bit.ly/vbookapp">Vbook</a>, <a href="https://www.dropbox.com/scl/fi/nshftyyj0j7uycsytadvn/Moon-Reader-Pro-v8.4_build_804003-Mod.apk?rlkey=yjmqtw17ekwn3y9x5jrausyl5&dl=1">Moon+ Reader</a>); <a href="https://voz.vn/t/ai-dich-truyen-tien-hiep-ky-ao-huyen-huyen.835430/page-13#post-27729135">IOS</a>
+        
+    </p>
+    <hr/>
+    <input type="text" autocomplete="off" id="search-input" placeholder="Nhập từ khoá...">
+    <button onclick="searchFiles()">🔍</button>
+    <ul id="file-list">
+        ↻ Đang tải dữ liệu
+    </ul>
+    <p>Tổng: <span id="totalBooks">0</span></p>
+    
+    <script>
+        // Initialize a variable to store the data fetched from the server
+        let fileData = null;
+
+        // Function to fetch data from the Google Apps Script web app
+        function fetchData() {
+            const scriptUrl = "https://script.google.com/macros/s/AKfycbxLnpQ18rGMK2xEAEVpG6RJTW4gFqVLpSO--w0IcSiePwTs_waSvYVTW04HzDCfIlylkQ/exec";
+            return fetch(scriptUrl)
+                .then(response => response.json())
+                .then(data => {
+                    // Sửa data.files
+                    data.files = data.files.map(file => {
+                        file.name = file.name.replace(".epub", "");
+                        return file;
+                    });
+
+                    // Lưu trữ dữ liệu đã sửa vào biến
+                    fileData = data;
+                });
+        }
+
+
+        function toSize(e){return e<1024?e+" B":e<1048576?(e/1024).toFixed(2)+" KB":e<1073741824?(e/1048576).toFixed(2)+" MB":(e/1073741824).toFixed(2)+" GB"}
+        function stringToSlug(a){for(var e="àáãảạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệđùúủũụưừứửữựòóỏõọôồốổỗộơờớởỡợìíỉĩịäëïîöüûñçýỳỹỵỷ",o=0,u=e.length;o<u;o++)a=a.replace(RegExp(e[o],"gi"),"aaaaaaaaaaaaaaaaaeeeeeeeeeeeduuuuuuuuuuuoooooooooooooooooiiiiiaeiiouuncyyyyy"[o]);return a=a.toLowerCase().trim().replace(/[^a-z0-9\-]/g,"-").replace(/-+/g,"-")}
+
+        // Function to display the file list
+        function displayFileList(files) {
+            const fileListElement = document.getElementById("file-list");
+
+            // Clear existing content
+            fileListElement.innerHTML = "";
+
+            // Loop through the file list and create list items with download links
+
+            files.forEach(file => {
+                const listItemHtml = `<li>📘 <a href="https://drive.google.com/uc?export=download&id=${file.id}">${file.name.replace(".epub", "")}</a> (${toSize(file.size)})</li>`;
+                fileListElement.innerHTML += listItemHtml;
+            });
+        }
+
+        // Function to search files by filename
+        function searchFiles() {
+            const searchInput = document.getElementById("search-input");
+            const searchTerm = stringToSlug(searchInput.value);
+
+            if (fileData) {
+                const files = fileData.files.filter(file => stringToSlug(file.name).includes(searchTerm));
+                displayFileList(files);
+                document.getElementById("totalBooks").textContent = files.length;
+            } else {
+                console.error("File data is not available.");
+            }
+        }
+
+        // Event listener for Enter key press in the search input
+        const searchInput = document.getElementById("search-input");
+        searchInput.addEventListener("keyup", function(event) {
+            if (event.key === "Enter") {
+                searchFiles();
+            }
+        });
+
+        // Initial fetch and display of all files
+        fetchData()
+            .then(() => {
+                displayFileList(fileData.files);
+                document.getElementById("totalBooks").textContent = fileData.files.length;
+
+            })
+            .catch(error => {
+                console.error("Error fetching data:", error);
+            });
+    </script>
+</body>
+</html>
