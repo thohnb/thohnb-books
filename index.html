@@ -16,7 +16,7 @@
     />
   </head>
 <body>
-    <h1>Kho sách của Thọ Gầy</h1>
+    <h1>Truyện AI Dịch bởi <a href="https://voz.vn/t/ai-dich-truyen-tien-hiep-ky-ao-huyen-huyen.835430/">hikenshi</a></h1>
     <p>
         1. Toàn bộ truyện ở đây đều là do AI của hikenshi dịch.<br/>
         2. Phần mềm/ứng dụng đọc file epub: Windows, Mac, Linux (<a href="https://calibre-ebook.com/download">Calibre</a>, <a href="https://github.com/troyeguo/koodo-reader/releases">Koodo</a>); Android (<a href="https://bit.ly/vbookapp">Vbook</a>, <a href="https://www.dropbox.com/scl/fi/nshftyyj0j7uycsytadvn/Moon-Reader-Pro-v8.4_build_804003-Mod.apk?rlkey=yjmqtw17ekwn3y9x5jrausyl5&dl=1">Moon+ Reader</a>); <a href="https://voz.vn/t/ai-dich-truyen-tien-hiep-ky-ao-huyen-huyen.835430/page-13#post-27729135">IOS</a>
@@ -36,13 +36,13 @@
 
         // Function to fetch data from the Google Apps Script web app
         function fetchData() {
-            const scriptUrl = "https://script.google.com/macros/s/AKfycbxLnpQ18rGMK2xEAEVpG6RJTW4gFqVLpSO--w0IcSiePwTs_waSvYVTW04HzDCfIlylkQ/exec";
+            const scriptUrl = "https://script.google.com/macros/s/AKfycbyr9cSxS9ozdDPgG4lS6b2KZRpvkIZCPl2zAtJB48dIM7o0Dr94F1f_BDwaHPHqeIEUBA/exec";
             return fetch(scriptUrl)
                 .then(response => response.json())
                 .then(data => {
                     // Sửa data.files
                     data.files = data.files.map(file => {
-                        file.name = file.name.replace(".epub", "");
+                        file.name = file.name.replace(".epub", "").replace(" (AI Dịch)", "");
                         return file;
                     });
 
